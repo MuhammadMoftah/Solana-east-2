@@ -1,0 +1,60 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '../ui/Icon.astro';
+import media from '../../content/solana-east.media.js';
+import { getSection } from '../../lib/content.js';
+
+const section = getSection('developer');
+const { content } = section;
+const logo = media.oraLogo;
+---
+
+<section id="developer" class="section section-tint" aria-labelledby="developer-title">
+  <div class="container-x grid items-center gap-14 lg:grid-cols-12">
+    <div class="flex justify-center lg:col-span-5" data-reveal="scale">
+      <div class="relative flex aspect-square w-[min(100%,15rem)] items-center sm:w-[min(100%,22rem)] justify-center rounded-full border border-champagne-300/25">
+        <span class="absolute inset-4 rounded-full border border-champagne-300/10" aria-hidden="true"></span>
+        <Image
+          src={logo.src}
+          alt={logo.alt}
+          widths={[240, 360, 480]}
+          sizes="13rem"
+          quality={80}
+          class="logo-light relative w-[58%]"
+        />
+      </div>
+    </div>
+
+    <div class="lg:col-span-6 lg:col-start-7">
+      <p class="eyebrow" data-reveal>The developer</p>
+      <h2 id="developer-title" class="heading-2 mt-6" data-reveal style="--reveal-delay:80">
+        {content.name}
+        <span class="italic-accent mt-4 block">Lifestyle destinations</span>
+      </h2>
+      <p class="lead mt-8" data-reveal style="--reveal-delay:140">{content.description}</p>
+      <dl class="hairline mt-10 grid gap-6 border-t pt-8 sm:grid-cols-2" data-reveal style="--reveal-delay:180">
+        <div>
+          <dt class="label">Chairman & CEO</dt>
+          <dd class="mt-2 font-display text-2xl text-champagne-100">{content.chairmanAndCEO}</dd>
+        </div>
+        <div>
+          <dt class="label">Official website</dt>
+          <dd class="mt-2">
+            <a href={content.website} class="text-link inline-flex items-center gap-2 text-[0.95rem]" target="_blank" rel="noopener">
+              oradevelopers.com
+              <Icon name="external" class="size-4" />
+              <span class="sr-only">(opens in a new tab)</span>
+            </a>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The source logo pairs a grey mark with a dark tagline; render both in light champagne. */
+  .logo-light {
+    filter: brightness(0) invert(0.88) sepia(0.25);
+  }
+</style>

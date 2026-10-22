@@ -1,0 +1,140 @@
+---
+import { Image } from 'astro:assets';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Icon from '../ui/Icon.astro';
+import media from '../../content/solana-east.media.js';
+import {
+  getSection,
+  sourceList,
+  unitTypeSummary,
+  formatRange,
+  formatBedrooms,
+  formatEgpMillions,
+  configLayouts,
+  configSizeRange,
+  pad2,
+} from '../../lib/content.js';
+
+const section = getSection('residential-units');
+const unitTypes = section.content.unitTypes;
+
+const unitImages: Record<string, keyof typeof media> = {
+  apartments: 'buildingA3',
+  duplexes: 'buildingA4',
+  townhouses: 'streetView',
+  villas: 'villaPool1',
+};
+
+const cards = unitTypes.map((unit: any) => ({
+  ...unit,
+  summary: unitTypeSummary(unit),
+  image: media[unitImages[unit.id]],
+}));
+const typeNames = unitTypes.map((u: any) => u.name.toLowerCase());
+const bedrooms = unitTypes.flatMap((u: any) => u.configurations.map((c: any) => c.bedrooms));
+const bedroomSpan = `${Math.min(...bedrooms)} to ${Math.max(...bedrooms)}`;
+---
+
+<section id="residential-units" class="section section-tint" aria-labelledby="residences-title">
+  <div class="container-x">
+    <div class="grid items-end gap-10 lg:grid-cols-12">
+      <SectionHeading id="residences-title" eyebrow="Residences" title={section.content.heading} class="lg:col-span-7" />
+      <div class="lg:col-span-5 lg:pb-2" data-reveal style="--reveal-delay:120">
+        <p class="lead first-letter:uppercase">
+          {typeNames.slice(0, -1).join(', ')} and {typeNames.at(-1)} — listed with layouts from {bedroomSpan} bedrooms.
+        </p>
+        <p class="source-note mt-4">
+          Layouts and sizes as listed by {sourceList(section.sources)}; confirm current availability and specifications
+          with the sales team.
+        </p>
+      </div>
+    </div>
+
+    <ul class="mt-16 grid items-start gap-x-6 gap-y-14 sm:grid-cols-2 lg:mt-20 xl:grid-cols-4">
+      {
+        cards.map((unit: any, index: number) => (
+          <li class:list={['group', index % 2 === 1 && 'xl:mt-16']} data-reveal style={`--reveal-delay:${index * 100}`}>
+            <article aria-labelledby={`unit-${unit.id}`}>
+              <div class="shape-arch hover-zoom relative aspect-[5/4] border border-champagne-300/15 sm:aspect-[3/4]">
+                <Image
+                  src={unit.image.src}
+                  alt={unit.image.alt}
+                  widths={[360, 540, 720]}
+                  sizes="(min-width: 80rem) 18rem, (min-width: 40rem) 45vw, 90vw"
+                  quality={62}
+                  class="media-fill"
+                  style={'position' in unit.image ? `object-position:${unit.image.position}` : undefined}
+                />
+                <span class="absolute bottom-4 left-4 rounded-full bg-night-900/70 px-3 py-1 text-[0.625rem] tracking-[0.16em] text-mist-200 uppercase backdrop-blur-sm">
+                  Illustrative render
+                </span>
+              </div>
+
+              <p class="label mt-7 text-champagne-500">{pad2(index)}</p>
+              <h3 id={`unit-${unit.id}`} class="heading-3 mt-2 uppercase tracking-[0.04em]">
+                {unit.name}
+              </h3>
+
+              <dl class="hairline mt-5 divide-y divide-champagne-300/15 border-y text-sm">
+                <div class="flex justify-between gap-4 py-3">
+                  <dt class="text-mist-400">Bedrooms</dt>
+                  <dd class="text-champagne-100">{formatBedrooms(unit.summary.bedroomRange).replace(/ bedrooms?/, '')}</dd>
+                </div>
+                {unit.summary.sizeRange && (
+                  <div class="flex justify-between gap-4 py-3">
+                    <dt class="text-mist-400">Listed sizes</dt>
+                    <dd class="text-champagne-100 tabular-nums">{formatRange(unit.summary.sizeRange)}</dd>
+                  </div>
+                )}
+                {unit.summary.startingPriceEgp && (
+                  <div class="flex justify-between gap-4 py-3">
+                    <dt class="text-mist-400">Listed from</dt>
+                    <dd class="text-champagne-100">
+                      EGP {formatEgpMillions(unit.summary.startingPriceEgp)}
+                      <sup aria-hidden="true">*</sup>
+                    </dd>
+                  </div>
+                )}
+              </dl>
+
+              <details class="group/details mt-1">
+                <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 text-[0.6875rem] font-semibold tracking-[0.2em] text-champagne-300 uppercase [&::-webkit-details-marker]:hidden">
+                  {unit.summary.layoutCount} listed layouts
+                  <Icon name="plus" class="size-4 transition-transform duration-500 group-open/details:rotate-45" />
+                </summary>
+                <div class="space-y-4 pb-2">
+                  {unit.configurations.map((config: any) => (
+                    <div>
+                      <p class="text-sm text-champagne-100">
+                        {formatBedrooms([config.bedrooms, config.bedrooms])}
+                        {configSizeRange(config) && <span class="text-mist-400"> · {formatRange(configSizeRange(config))}</span>}
+                      </p>
+                      <ul class="mt-2 flex flex-wrap gap-1.5">
+                        {configLayouts(config).map((layout: any) => (
+                          <li class="rounded-full border border-champagne-300/20 px-2.5 py-0.5 text-xs text-mist-300 tabular-nums">
+                            Type {layout.type} · {layout.sizeSqm} m²
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </details>
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-16 flex flex-col gap-6 border-t border-champagne-300/15 pt-8 md:flex-row md:items-center md:justify-between" data-reveal>
+      <p class="source-note max-w-2xl">
+        <span aria-hidden="true">*</span>Starting prices quoted by {sourceList(['property-finder'])} for some layouts; prices
+        change and are not offers. Renders illustrate the architectural style and are not tied to a specific unit type.
+      </p>
+      <a href="#contact" class="btn shrink-0">
+        Request floor plans
+        <Icon name="arrow" class="btn-arrow" />
+      </a>
+    </div>
+  </div>
+</section>

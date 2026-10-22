@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+import SectionHeading from '../ui/SectionHeading.astro';
+import PalmFrond from '../ui/PalmFrond.astro';
+import media from '../../content/solana-east.media.js';
+import { getSection, sourceList, pad2 } from '../../lib/content.js';
+
+const section = getSection('masterplan');
+const { concepts } = section.content;
+
+const conceptImages: Record<string, keyof typeof media> = {
+  'central-lakes': 'gardenView1',
+  'green-corridors': 'buildingA5',
+  'connected-spaces': 'aerialMasterplan',
+  'retail-hub': 'buildingA6',
+};
+---
+
+<section id="masterplan" class="section overflow-hidden" aria-labelledby="masterplan-title">
+  <PalmFrond class="decor-frond top-[38%] -left-40 w-[30rem] -rotate-12 opacity-70 max-lg:hidden" />
+  <PalmFrond class="decor-frond -right-32 bottom-0 w-[26rem] rotate-[200deg] opacity-60 max-lg:hidden" />
+
+  <div class="container-x relative">
+    <SectionHeading id="masterplan-title" eyebrow={section.title} title="The masterplan" accent={section.content.heading} align="center" class="max-w-3xl">
+      <p>{section.content.description}</p>
+    </SectionHeading>
+
+    <ol class="relative mx-auto mt-16 grid max-w-5xl grid-cols-2 gap-x-6 gap-y-12 sm:mt-20 md:grid-cols-4">
+      {
+        concepts.map((concept: any, index: number) => {
+          const image = media[conceptImages[concept.id]];
+          return (
+            <li class="group relative flex flex-col items-center text-center" data-reveal="scale" style={`--reveal-delay:${index * 110}`}>
+              <div
+                class:list={[
+                  'relative w-[72%]',
+                  index < concepts.length - 1 &&
+                    'md:after:absolute md:after:top-1/2 md:after:left-full md:after:h-px md:after:w-[calc(38.9%+1.5rem)] md:after:bg-champagne-300/25',
+                ]}
+              >
+                <div class="shape-circle hover-zoom relative border border-champagne-300/30 p-1.5">
+                  <div class="shape-circle relative">
+                    <Image
+                      src={image.src}
+                      alt=""
+                      widths={[240, 360, 480]}
+                      sizes="(min-width: 64rem) 11rem, (min-width: 48rem) 17vw, 36vw"
+                      quality={60}
+                      class="media-fill"
+                      style={'position' in image ? `object-position:${image.position}` : undefined}
+                    />
+                  </div>
+                </div>
+                <span class="absolute -top-1 -right-1 flex size-9 items-center justify-center rounded-full border border-champagne-300/40 bg-night-900 font-display text-base text-champagne-300">
+                  {index + 1}
+                </span>
+              </div>
+              <h3 class="mt-6 max-w-[12rem] font-sans text-[0.8125rem] leading-snug font-medium tracking-[0.06em] text-mist-200">
+                {concept.title}
+              </h3>
+            </li>
+          );
+        })
+      }
+    </ol>
+
+    <div class="mx-auto mt-24 grid max-w-5xl gap-x-16 gap-y-16 sm:mt-28 md:grid-cols-2 md:gap-y-20">
+      {
+        concepts.map((concept: any, index: number) => (
+          <article class="relative pt-10 pl-14 sm:pl-20" data-reveal style={`--reveal-delay:${(index % 2) * 120}`}>
+            <span class="ghost-numeral" aria-hidden="true">
+              {index + 1}
+            </span>
+            <p class="label relative text-champagne-500">{pad2(index)}</p>
+            <h3 class="heading-3 relative mt-3">{concept.title}</h3>
+            <p class="relative mt-4 max-w-sm text-[0.95rem] leading-relaxed text-mist-300">{concept.description}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="source-note mx-auto mt-20 max-w-5xl text-center" data-reveal>
+      Concept as described in the {sourceList(['ora-brochure'])}. Images are architectural visualizations used for
+      illustration; they are not specific masterplan views.
+    </p>
+  </div>
+</section>

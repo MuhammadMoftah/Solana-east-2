@@ -1,0 +1,101 @@
+---
+import { Image } from 'astro:assets';
+import media from '../../content/solana-east.media.js';
+import { content, getSection, formatNumber, sourceList } from '../../lib/content.js';
+
+const section = getSection('project-overview');
+const facts = section.content.facts;
+const fact = (label: string) => facts.find((f: any) => f.label === label);
+
+const land = fact('Land area');
+const units = fact('Number of units');
+const mix = fact('Residential product mix');
+const developer = fact('Developer');
+const place = fact('Project location');
+
+const figures = [
+  {
+    value: formatNumber(land.value),
+    unit: land.unit,
+    detail: `${formatNumber(land.alternateValue)} m² of land`,
+    starred: false,
+  },
+  { value: formatNumber(units.value), unit: units.unit, detail: 'Homes in the masterplan', starred: false },
+  {
+    value: `${mix.value.singleFamilyPercent} / ${mix.value.multipleFamilyPercent}`,
+    unit: '%',
+    detail: 'Single- / multiple-family mix',
+    starred: true,
+  },
+];
+
+const { location } = content.project;
+const main = media.buildingA2;
+const inset = media.livingRoom;
+---
+
+<section id="project-overview" class="section overflow-hidden" aria-labelledby="overview-title">
+  <div class="grid items-center gap-y-16 lg:grid-cols-2 lg:gap-x-4">
+    <div class="relative pr-6 pb-[22%] sm:pr-16 lg:pr-10 lg:pb-[18%]">
+      <div class="shape-pebble hover-zoom relative aspect-[4/3] w-[92%] overflow-hidden" data-reveal="image">
+        <Image
+          src={main.src}
+          alt={main.alt}
+          widths={[480, 720, 960, 1280]}
+          sizes="(min-width: 64rem) 45vw, 92vw"
+          quality={62}
+          class="media-fill"
+        />
+      </div>
+      <div
+        class="shape-circle hover-zoom absolute right-[6%] bottom-0 w-[44%] border-[6px] border-night-900 sm:right-[12%] lg:right-[6%]"
+        data-reveal="scale"
+        style="--reveal-delay:200"
+      >
+        <Image src={inset.src} alt={inset.alt} widths={[360, 560, 720]} sizes="(min-width: 64rem) 20vw, 42vw" quality={62} class="media-fill" />
+      </div>
+      <span
+        class="absolute bottom-[12%] left-[8%] hidden size-28 rounded-full border border-champagne-300/25 sm:block"
+        aria-hidden="true"
+      ></span>
+    </div>
+
+    <div class="container-x lg:mx-0 lg:max-w-[38rem] lg:pr-16 lg:pl-8">
+      <p class="eyebrow" data-reveal>{section.title}</p>
+      <h2 id="overview-title" class="heading-2 mt-6" data-reveal style="--reveal-delay:80">
+        {section.content.heading}
+        <span class="italic-accent mt-4 block">{location.city}, {location.broaderArea}</span>
+      </h2>
+      <p class="lead mt-8" data-reveal style="--reveal-delay:140">{section.content.description}</p>
+      <p class="mt-5 text-[0.95rem] text-mist-400" data-reveal style="--reveal-delay:180">
+        Developed by <strong class="font-semibold text-champagne-100">{developer.value}</strong> in {place.value}.
+      </p>
+
+      <dl class="hairline mt-12 grid grid-cols-2 gap-x-6 gap-y-8 border-t pt-8 sm:grid-cols-3 sm:gap-8" data-reveal style="--reveal-delay:220">
+        {
+          figures.map((figure, index) => (
+            <div class:list={[index === 2 && 'col-span-2 sm:col-span-1']}>
+              <dt class="sr-only">{figure.detail}</dt>
+              <dd>
+                <span class="block font-display text-[clamp(1.75rem,1.3rem+1.7vw,2.75rem)] leading-none whitespace-nowrap text-champagne-300">
+                  {figure.value}
+                  <span class="ml-0.5 font-sans text-[0.6875rem] tracking-[0.12em] text-champagne-500 uppercase">
+                    {figure.unit}
+                    {figure.starred && <sup aria-hidden="true">*</sup>}
+                  </span>
+                </span>
+                <span class="meta mt-3 block" aria-hidden="true">
+                  {figure.detail}
+                </span>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+      <p class="source-note mt-6" data-reveal>
+        Source: {sourceList(land.sourceIds)}. <span aria-hidden="true">*</span>Product-mix percentages are read from a brochure
+        graphic and are pending confirmation.
+      </p>
+    </div>
+  </div>
+</section>

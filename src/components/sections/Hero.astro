@@ -1,0 +1,58 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from '../ui/Icon.astro';
+import media from '../../content/solana-east.media.js';
+import { getSection } from '../../lib/content.js';
+
+const { content } = getSection('hero');
+const image = media.villaPool4;
+---
+
+<section id="top" class="relative isolate overflow-hidden lg:min-h-[min(100svh,58rem)]" aria-labelledby="hero-title">
+  <div
+    class="shape-hero-mobile relative h-[min(68svh,34rem)] w-full overflow-hidden sm:h-[min(70svh,40rem)] lg:shape-hero lg:absolute lg:top-0 lg:right-0 lg:h-full lg:w-[55%]"
+  >
+    <Picture
+      src={image.src}
+      alt={image.alt}
+      formats={['avif', 'webp']}
+      widths={[480, 720, 960, 1280, 1600, 2000]}
+      sizes="(min-width: 64rem) 55vw, 100vw"
+      quality={55}
+      priority
+      class="media-fill animate-unveil object-[38%_72%]"
+      pictureAttributes={{ class: 'contents' }}
+    />
+    <div class="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-night-900/80 to-transparent lg:hidden" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-night-900/10" aria-hidden="true"></div>
+  </div>
+
+  <div class="container-x relative pb-20 lg:flex lg:min-h-[min(100svh,58rem)] lg:items-center lg:pt-44 lg:pb-24">
+    <div class="-mt-10 max-w-xl animate-settle sm:-mt-16 lg:mt-0 lg:w-[42%] lg:max-w-none">
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h1 id="hero-title" class="display-1 mt-7 text-[clamp(2.6rem,1.5rem+3.4vw,4.75rem)]">
+        {content.heading}
+      </h1>
+      <p class="lead mt-8 max-w-[32rem]">{content.description}</p>
+      <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
+        <a href={content.primaryCta.target} class="btn">
+          {content.primaryCta.label}
+          <Icon name="arrow" class="btn-arrow" />
+        </a>
+        <a href={content.secondaryCta.target} class="link-underline pb-1 text-[0.6875rem] font-semibold tracking-[0.22em] text-champagne-300 uppercase">
+          {content.secondaryCta.label}
+        </a>
+      </div>
+      <ul class="hairline mt-14 grid gap-3 border-t pt-7 sm:grid-cols-3 sm:gap-6">
+        {
+          content.highlights.map((item: string) => (
+            <li class="meta flex gap-3 sm:block">
+              <span class="mt-2.5 block h-px w-5 shrink-0 bg-champagne-500 sm:mt-0 sm:mb-3" aria-hidden="true" />
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

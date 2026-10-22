@@ -1,0 +1,28 @@
+---
+interface Props {
+  id: string;
+  eyebrow?: string;
+  title: string;
+  accent?: string;
+  align?: 'left' | 'center';
+  class?: string;
+}
+
+const { id, eyebrow, title, accent, align = 'left', class: className } = Astro.props;
+const centered = align === 'center';
+---
+
+<div class:list={[centered && 'mx-auto text-center', className]}>
+  {eyebrow && <p class:list={['eyebrow', centered && 'justify-center']} data-reveal>{eyebrow}</p>}
+  <h2 id={id} class="heading-2 mt-6" data-reveal style="--reveal-delay:80">
+    {title}
+    {accent && <span class="italic-accent mt-3 block">{accent}</span>}
+  </h2>
+  {
+    Astro.slots.has('default') && (
+      <div class:list={['lead mt-7', centered && 'mx-auto']} data-reveal style="--reveal-delay:160">
+        <slot />
+      </div>
+    )
+  }
+</div>

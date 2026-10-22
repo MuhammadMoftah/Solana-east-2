@@ -1,0 +1,85 @@
+---
+import { Image } from 'astro:assets';
+import media from '../../content/solana-east.media.js';
+import { getSection, sourceList, pad2 } from '../../lib/content.js';
+
+const amenities = getSection('amenities');
+const retail = getSection('retail-entertainment');
+
+const features = amenities.content.features;
+const confirmed = features.filter((f: any) => f.verification === 'brochure-listed');
+const thirdParty = features.filter((f: any) => f.verification === 'third-party-source-only');
+
+const main = media.villaPool2;
+const inset = media.gardenView2;
+---
+
+<section id="amenities" class="section overflow-hidden" aria-labelledby="amenities-title">
+  <div class="grid items-start gap-y-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+    <div class="container-x lg:mr-0 lg:max-w-[42rem] lg:pr-12">
+      <p class="eyebrow" data-reveal>Lifestyle & amenities</p>
+      <h2 id="amenities-title" class="heading-2 mt-6" data-reveal style="--reveal-delay:80">
+        {amenities.content.heading}
+      </h2>
+      <p class="lead mt-8" data-reveal style="--reveal-delay:140">
+        Shared facilities planned across the community — from family services to sport, wellness and everyday retail.
+      </p>
+
+      <ol class="mt-12 grid gap-x-10 sm:grid-cols-2" data-reveal style="--reveal-delay:180">
+        {
+          confirmed.map((feature: any, index: number) => (
+            <li class="hairline flex items-baseline gap-4 border-b py-4">
+              <span class="w-6 shrink-0 font-display text-[0.95rem] text-champagne-500 tabular-nums">{pad2(index)}</span>
+              <span class="text-[0.95rem] text-champagne-100">{feature.title}</span>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="source-note mt-5" data-reveal>Listed in the {sourceList(['ora-brochure'])}.</p>
+    </div>
+
+    <div class="relative pb-[24%] pl-6 sm:pl-16 lg:mt-24 lg:pb-[20%] lg:pl-4">
+      <div class="shape-pebble-right hover-zoom relative ml-auto aspect-[5/6] w-[90%] overflow-hidden" data-reveal="image">
+        <Image src={main.src} alt={main.alt} widths={[480, 720, 960, 1280]} sizes="(min-width: 64rem) 44vw, 90vw" quality={62} class="media-fill" />
+      </div>
+      <div class="shape-circle hover-zoom absolute bottom-0 left-[4%] w-[46%] border-[6px] border-night-900 sm:left-[10%] lg:left-0" data-reveal="scale" style="--reveal-delay:200">
+        <Image src={inset.src} alt={inset.alt} widths={[360, 560, 720]} sizes="(min-width: 64rem) 20vw, 44vw" quality={62} class="media-fill" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container-x mt-20 lg:mt-24">
+    <div class="hairline grid gap-8 border-t pt-10 lg:grid-cols-12" data-reveal>
+      <div class="lg:col-span-4">
+        <h3 class="heading-3">Also listed by third parties</h3>
+        <p class="source-note mt-3 max-w-xs">
+          Mentioned by {sourceList(['property-finder'])} only — pending confirmation in official project material.
+        </p>
+      </div>
+      <ul class="flex flex-wrap content-start gap-2 lg:col-span-8">
+        {thirdParty.map((feature: any) => <li class="tag">{feature.title}</li>)}
+      </ul>
+    </div>
+  </div>
+
+  <div id="retail-entertainment" class="container-x mt-24 scroll-mt-24 lg:mt-32" aria-labelledby="retail-title">
+    <div class="relative overflow-hidden rounded-[2rem] border border-champagne-300/20 bg-night-850 px-6 py-14 sm:px-12 lg:rounded-[3rem] lg:px-20 lg:py-16">
+      <span class="pointer-events-none absolute -top-10 -right-6 font-display text-[11rem] leading-none text-champagne-300/[0.05] italic select-none sm:text-[15rem]" aria-hidden="true">
+        Solana
+      </span>
+      <div class="relative grid gap-10 lg:grid-cols-12 lg:items-center">
+        <div class="lg:col-span-6" data-reveal>
+          <p class="eyebrow">{retail.title}</p>
+          <h3 id="retail-title" class="heading-3 mt-5 text-[clamp(1.75rem,1.3rem+1.5vw,2.625rem)]">{retail.content.heading}</h3>
+          <p class="mt-5 max-w-lg text-[0.95rem] leading-relaxed text-mist-300">{retail.content.description}</p>
+        </div>
+        <div class="lg:col-span-6" data-reveal style="--reveal-delay:120">
+          <ul class="flex flex-wrap gap-2 lg:justify-end">
+            {retail.content.highlights.map((item: string) => <li class="tag border-champagne-300/35 text-champagne-100">{item}</li>)}
+          </ul>
+          <p class="source-note mt-5 lg:text-right">Planned features described in the {sourceList(retail.sources)}; not yet operating.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,221 @@
+---
+import Icon from './ui/Icon.astro';
+import Wordmark from './ui/Wordmark.astro';
+import PalmFrond from './ui/PalmFrond.astro';
+
+export interface NavItem {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  items: NavItem[];
+  locationLabel: string;
+}
+
+const { items, locationLabel } = Astro.props;
+const navLink =
+  'nav-link relative inline-flex min-h-10 items-center rounded-full border border-transparent px-4 text-[0.8125rem] tracking-[0.04em] text-mist-200 transition-colors duration-300 hover:text-champagne-100 data-[active]:border-champagne-300/45 data-[active]:text-champagne-100';
+---
+
+<header id="site-header" class="absolute inset-x-0 top-0 z-30">
+  <div class="container-x grid grid-cols-[1fr_auto_1fr] items-center gap-4 pt-5 lg:pt-8">
+    <p class="label hidden items-center gap-2 text-mist-300 lg:flex">
+      <Icon name="pin" class="size-4 text-champagne-500" />
+      {locationLabel}
+    </p>
+    <a href="#top" class="col-start-1 justify-self-start lg:col-start-2 lg:justify-self-center" aria-label="Solana East by ORA — back to top">
+      <Wordmark />
+    </a>
+    <div class="col-start-3 flex items-center justify-self-end gap-2">
+      <a href="#contact" class="btn hidden min-h-11 bg-night-900/55 px-5 backdrop-blur-md sm:inline-flex">Enquire</a>
+      <button
+        type="button"
+        class="menu-toggle btn-round bg-night-900/55 backdrop-blur-md xl:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-requires-js
+      >
+        <span class="sr-only">Open menu</span>
+        <Icon name="menu" class="size-5" />
+      </button>
+    </div>
+  </div>
+
+  <nav aria-label="Primary" class="mt-5 hidden justify-center xl:flex">
+    <ul class="flex items-center gap-0.5 rounded-full border border-champagne-300/12 bg-night-900/55 p-1 backdrop-blur-md">
+      {
+        items.map((item) => (
+          <li>
+            <a href={item.href} class={navLink}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<div
+  id="floating-nav"
+  class="pointer-events-none fixed inset-x-0 top-3 z-40 flex justify-center px-3 opacity-0 transition-[opacity,transform] duration-700 ease-out-soft -translate-y-6 data-[visible]:pointer-events-auto data-[visible]:translate-y-0 data-[visible]:opacity-100"
+  inert
+>
+  <div
+    class="flex w-full max-w-[72rem] items-center justify-between gap-4 rounded-full border border-champagne-300/20 bg-night-900/80 py-2 pr-2 pl-6 shadow-[0_1.5rem_3rem_-1.5rem_rgb(0_0_0/0.6)] backdrop-blur-xl"
+  >
+    <a href="#top" class="font-display text-[1.35rem] leading-none text-champagne-300 italic" aria-label="Solana East by ORA — back to top">
+      Solana East
+    </a>
+    <nav aria-label="Primary (compact)" class="hidden xl:block">
+      <ul class="flex items-center gap-0.5">
+        {
+          items.map((item) => (
+            <li>
+              <a href={item.href} class={navLink}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="flex items-center gap-2">
+      <a href="#contact" class="btn min-h-11 px-5">Enquire</a>
+      <button type="button" class="menu-toggle btn-round size-11 xl:hidden" aria-expanded="false" aria-controls="mobile-menu" data-requires-js>
+        <span class="sr-only">Open menu</span>
+        <Icon name="menu" class="size-5" />
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  id="mobile-menu"
+  class="invisible fixed inset-0 z-[60] flex flex-col overflow-hidden bg-night-950 opacity-0 transition-[opacity,visibility] duration-500 ease-out-soft data-[open]:visible data-[open]:opacity-100 data-[open]:transition-opacity xl:hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Site menu"
+  inert
+>
+  <PalmFrond class="decor-frond -right-24 -bottom-16 w-[26rem] rotate-[-20deg] text-night-800" />
+  <div class="container-x relative flex items-center justify-between pt-5">
+    <Wordmark />
+    <button type="button" id="menu-close" class="btn-round">
+      <span class="sr-only">Close menu</span>
+      <Icon name="close" class="size-5" />
+    </button>
+  </div>
+  <nav aria-label="Mobile" class="container-x relative flex flex-1 flex-col justify-center overflow-y-auto py-8">
+    <ul>
+      {
+        [...items, { href: '#faq', label: 'FAQ' }].map((item, index) => (
+          <li class="menu-item" style={`--i:${index}`}>
+            <a
+              href={item.href}
+              class="flex items-baseline gap-5 py-2 font-display text-[clamp(2rem,8vw,3rem)] leading-tight text-champagne-300 uppercase transition-colors hover:text-champagne-50"
+            >
+              <span class="font-sans text-[0.6875rem] font-semibold tracking-[0.2em] text-champagne-500">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+  <div class="container-x relative pb-10">
+    <a href="#contact" class="btn btn-solid w-full sm:w-auto">Request information</a>
+  </div>
+</div>
+
+<div id="header-sentinel" class="pointer-events-none absolute top-0 left-0 h-[85vh] w-px" aria-hidden="true"></div>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .menu-item {
+      opacity: 0;
+      transform: translateY(1rem);
+      transition:
+        opacity 0.6s var(--ease-out-soft),
+        transform 0.7s var(--ease-out-soft);
+      transition-delay: calc(90ms + var(--i) * 45ms);
+    }
+
+    #mobile-menu[data-open] .menu-item {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const floating = document.getElementById('floating-nav')!;
+  const sentinel = document.getElementById('header-sentinel')!;
+  const menu = document.getElementById('mobile-menu')!;
+  const closeButton = document.getElementById('menu-close')!;
+  const toggles = [...document.querySelectorAll<HTMLButtonElement>('.menu-toggle')];
+  let lastToggle: HTMLButtonElement | null = null;
+
+  new IntersectionObserver(([entry]) => {
+    const show = !entry.isIntersecting;
+    floating.toggleAttribute('data-visible', show);
+    floating.inert = !show;
+  }).observe(sentinel);
+
+  // Scroll spy: mark the nav link of the section currently in the middle of the viewport.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.nav-link')];
+  const targets = [...new Set(links.map((link) => link.hash))]
+    .map((hash) => document.querySelector<HTMLElement>(hash))
+    .filter((el): el is HTMLElement => Boolean(el));
+  const spy = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const hash = `#${entry.target.id}`;
+        for (const link of links) {
+          const active = link.hash === hash;
+          link.toggleAttribute('data-active', active);
+          if (active) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        }
+      }
+    },
+    { rootMargin: '-45% 0px -50% 0px' },
+  );
+  targets.forEach((target) => spy.observe(target));
+
+  const background = () => document.querySelectorAll<HTMLElement>('body > :not(#mobile-menu, script, style)');
+  const pageShell = () => document.querySelectorAll<HTMLElement>('.page-shell > :not(#mobile-menu, script, style)');
+
+  const setOpen = (open: boolean, restoreFocus = true) => {
+    menu.toggleAttribute('data-open', open);
+    menu.inert = !open;
+    [...background(), ...pageShell()].forEach((el) => {
+      if (!el.contains(menu)) el.inert = open;
+    });
+    toggles.forEach((toggle) => toggle.setAttribute('aria-expanded', String(open)));
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    if (open) closeButton.focus();
+    else if (restoreFocus) lastToggle?.focus();
+  };
+
+  toggles.forEach((toggle) =>
+    toggle.addEventListener('click', () => {
+      lastToggle = toggle;
+      setOpen(true);
+    }),
+  );
+  closeButton.addEventListener('click', () => setOpen(false));
+  menu.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('a')) setOpen(false, false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menu.hasAttribute('data-open')) setOpen(false);
+  });
+  matchMedia('(min-width: 80rem)').addEventListener('change', (event) => {
+    if (event.matches && menu.hasAttribute('data-open')) setOpen(false, false);
+  });
+</script>

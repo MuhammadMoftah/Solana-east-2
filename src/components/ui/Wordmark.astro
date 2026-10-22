@@ -1,0 +1,19 @@
+---
+/** Typographic Solana East wordmark (no official project logo exists yet). */
+interface Props {
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { size = 'md', class: className } = Astro.props;
+const sizes = {
+  sm: 'text-[1.45rem]',
+  md: 'text-[1.85rem]',
+  lg: 'text-[2.5rem]',
+};
+---
+
+<span class:list={['inline-flex flex-col items-center leading-none', className]}>
+  <span class:list={['font-display whitespace-nowrap text-champagne-300 italic', sizes[size]]}>Solana East</span>{' '}
+  <span class="mt-1 text-[0.55rem] font-semibold tracking-[0.5em] text-champagne-500 uppercase">by ORA</span>
+</span>

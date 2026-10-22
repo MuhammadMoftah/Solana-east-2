@@ -1,0 +1,33 @@
+---
+import Icon from '../ui/Icon.astro';
+import { getSection } from '../../lib/content.js';
+
+const section = getSection('faq');
+---
+
+<section id="faq" class="section" aria-labelledby="faq-title">
+  <div class="container-x grid gap-12 lg:grid-cols-12">
+    <div class="lg:col-span-4">
+      <p class="eyebrow" data-reveal>FAQ</p>
+      <h2 id="faq-title" class="heading-2 mt-6" data-reveal style="--reveal-delay:80">
+        Questions
+        <span class="italic-accent mt-3 block">& answers</span>
+      </h2>
+    </div>
+    <div class="hairline border-t lg:col-span-8" data-reveal style="--reveal-delay:120">
+      {
+        section.content.items.map((item: any) => (
+          <details name="faq" class="group hairline border-b">
+            <summary class="flex min-h-16 cursor-pointer list-none items-center justify-between gap-6 py-6 text-left [&::-webkit-details-marker]:hidden">
+              <span class="font-display text-[clamp(1.25rem,1.1rem+0.6vw,1.625rem)] leading-snug text-champagne-100">{item.question}</span>
+              <span class="btn-round size-10 shrink-0">
+                <Icon name="plus" class="size-4 transition-transform duration-500 group-open:rotate-45" />
+              </span>
+            </summary>
+            <p class="max-w-2xl pb-7 text-[0.95rem] leading-relaxed text-mist-300">{item.answer}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
